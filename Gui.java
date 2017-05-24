@@ -8,18 +8,11 @@ public class Gui extends JPanel{
 	private JPanel top;
 	private JPanel bot;
 	public Gui(){
+    top = new JPanel();
+    bot = new JPanel();
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		//top pane
-		top = new JPanel();
-		top.setPreferredSize(new Dimension(400,200));
-		top.setBorder(BorderFactory.createTitledBorder("1"));
-		//bottom pane
-		bot = new JPanel();
-		bot.setPreferredSize(new Dimension(500,500));
-		bot.setBorder(BorderFactory.createTitledBorder("2"));
-
-
-
+    createTopWindow();
+    createBotWindow();
 		// layeredPane = new JLayeredPane();
   //       layeredPane.setPreferredSize(new Dimension(300, 310));
   //       layeredPane.setBorder(BorderFactory.createTitledBorder(
@@ -33,11 +26,18 @@ public class Gui extends JPanel{
 		add(top);
 		add(bot);
 	}
-
+  private void createTopWindow(){
+    top.setPreferredSize(new Dimension(400,200));
+    top.setBorder(BorderFactory.createTitledBorder("top"));
+  }
+  private void createBotWindow(){
+    bot.setPreferredSize(new Dimension(500,500));
+    bot.setBorder(BorderFactory.createTitledBorder("bot"));
+  }
 	private static void createAndShowGUI() {
 
         //Create and set up the window.
-        JFrame frame = new JFrame("HelloWorldSwing");
+        JFrame frame = new JFrame("eBay Notification");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JComponent newContentPane = new Gui();
@@ -48,14 +48,13 @@ public class Gui extends JPanel{
         frame.pack();
         frame.setVisible(true);
     }
- 
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
+  public static void main(String[] args) {
+      //Schedule a job for the event-dispatching thread:
+      //creating and showing this application's GUI.
+      javax.swing.SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+              createAndShowGUI();
+          }
+      });
+  }
 }
