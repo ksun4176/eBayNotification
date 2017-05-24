@@ -80,13 +80,13 @@ public class Gui extends JPanel{
     if (search_field.getText().equals("")){
       // add label only if it doesnt exist before 
       if (valid_search){
-        top.add(inv_search_inp); // how to dynamically remove?
+        top.add(inv_search_inp); 
         valid_search = false;
         top.revalidate();
         top.repaint();
       }
     }else{
-      //VALID INPUT
+      //VALID INPUT, remove invalid input labels
       valid_search = true;
       top.remove(inv_search_inp);
       top.validate();
@@ -101,7 +101,7 @@ public class Gui extends JPanel{
         top.repaint();
       }
     }else{
-      // VALID INPUT
+      // VALID INPUT, remove invalid input labels
       valid_email = true;
       top.remove(inv_email_inp);
       top.validate();
