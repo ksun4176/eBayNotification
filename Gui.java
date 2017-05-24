@@ -2,13 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+
 public class Gui extends JPanel{ 
 	// private JLayeredPane layeredPane;
 	// private JLayeredPane layeredPane2;
+  private static final int WIDTH = 175;
+  private static final int HEIGHT_TOP = 225;
+  private static final int HEIGHT_BOT = 225;
+  private static final Color BG_COLOR = Color.CYAN;
+  ImageIcon submitButtonIcon = new ImageIcon("imgs/submit.png");
 	private JPanel top;
 	private JPanel bot;
 	public Gui(){
-    top = new JPanel();
+    top = new JPanel(new GridLayout(0,1));
     bot = new JPanel();
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     createTopWindow();
@@ -27,12 +33,25 @@ public class Gui extends JPanel{
 		add(bot);
 	}
   private void createTopWindow(){
-    top.setPreferredSize(new Dimension(400,200));
+    top.setPreferredSize(new Dimension(WIDTH, HEIGHT_TOP));
     top.setBorder(BorderFactory.createTitledBorder("top"));
+    top.setBackground(BG_COLOR);
+    // Create the label + text fields
+    JTextField search_field = new JTextField(15);
+    JTextField email_field = new JTextField(15); 
+    JButton submit = new JButton("Submit");
+    submit.setIcon(resizeIcon(submitButtonIcon, 3));
+    // Add items to the top panel
+    top.add(new JLabel("Search: "));
+    top.add(search_field);
+    top.add(new JLabel("E-mail: "));
+    top.add(email_field);
+    top.add(submit);
   }
   private void createBotWindow(){
-    bot.setPreferredSize(new Dimension(500,500));
+    bot.setPreferredSize(new Dimension(WIDTH, HEIGHT_BOT));
     bot.setBorder(BorderFactory.createTitledBorder("bot"));
+    // bot.setBackground(BG_COLOR);
   }
 	private static void createAndShowGUI() {
 
@@ -56,5 +75,13 @@ public class Gui extends JPanel{
               createAndShowGUI();
           }
       });
+  }
+
+
+  // method to resize ImageIcon into JButton
+  private static Icon resizeIcon(ImageIcon icon, int factor) {
+    Image img = icon.getImage();  
+    Image resizedImage = img.getScaledInstance(img.getWidth(null)/factor, img.getHeight(null)/factor,  java.awt.Image.SCALE_SMOOTH);  
+    return new ImageIcon(resizedImage);
   }
 }
