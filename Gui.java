@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.Arrays;
+import java.nio.file.*;
 
 @SuppressWarnings("serial")
 public class Gui extends JPanel{
@@ -28,10 +29,9 @@ public class Gui extends JPanel{
   ImageIcon submitButtonIcon = new ImageIcon("imgs/submit.png");
 
   //html file used for bottom pane
-  private String htmlname = "results.html";
-  private BufferedReader br = new BufferedReader(new FileReader("resultshtml.tmp"));
-  private String fileParts[3];
-  Arrays.fill(fileParts,"");
+  private static String htmlname = "";
+  private static BufferedReader br;
+  private static String[] fileParts = new String[]{"","",""};
 
 	private JPanel top;
 	private JPanel bot;
@@ -112,8 +112,20 @@ public class Gui extends JPanel{
       top.validate();
       top.repaint(); 
     }
-    
-    updateFile(search);
+    if(valid_email == true && valid_search == true){
+      try{
+        if(htmlname != ""){
+          Files.delete(Paths.get(htmlname));
+        }
+      } catch(NoSuchFileException e){
+        System.out.println("File does not exist to be erased.\n");
+      } catch(DirectoryNotEmptyException e){
+        System.out.println("This is a directory.\n");
+      } catch(IOException e){
+        System.out.println("You do not have permission to delete this file");
+      }
+      updateFile(search);
+    }
   }
 
 	private static void createAndShowGUI() {
@@ -131,7 +143,12 @@ public class Gui extends JPanel{
       frame.setVisible(true);
   }
   public static void main(String[] args) {
-
+    try{
+      br = new BufferedReader(new FileReader("resultshtml.tmp"));
+    } catch(FileNotFoundException e){
+      System.out.println("Cannot find html template.\n");
+      System.exit(0);
+    }
     fillParts();
 
     //Schedule a job for the event-dispatching thread:
@@ -153,29 +170,33 @@ public class Gui extends JPanel{
   private static void fillParts(){
     int parts = 0;
     String line;
-    while((line = br.readLine()) != null){
-      if(line.contains("@keywords@") == true){
-        fileParts[++parts] = line;
-        parts++;
-      } else{
-        fileParts[parts] += line;
+    try{
+      while((line = br.readLine()) != null){
+        if(line.contains("@keywords@") == true){
+          fileParts[++parts] = line;
+          parts++;
+        } else{
+          fileParts[parts] += line;
+        }
       }
+      br.close();
+    } catch(IOException e){
+      System.out.println("Error in reading from html template.\n");
+      System.exit(0);
     }
-    br.close();
   }
 
   private static void updateFile(String repl){
-    htmlname = repl.replaceAll("\s","+") + ".html";
+    htmlname = repl.replaceAll("\\s","+") + ".html";
     try{
       BufferedWriter bw = new BufferedWriter(new FileWriter(htmlname));
       bw.write(fileParts[0],0,fileParts[0].length());
-      String temp = fileParts[1];
-      temp.replace("@keywords@",repl);
+      String temp = fileParts[1].replace("@keywords@",repl);
       bw.write(temp,0,temp.length());
       bw.write(fileParts[2],0,fileParts[2].length());
       bw.close();
     } catch(IOException e){
-      System.out.println("Error in writing to html file");
+      System.out.println("Error in writing to html file.\n");
       System.exit(0);
     }
   }
