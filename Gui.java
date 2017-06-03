@@ -8,9 +8,9 @@ import java.nio.file.*;
 @SuppressWarnings("serial")
 public class Gui extends JPanel{
   //dimensions and colors of the gui
-  private static final int WIDTH = 300;
+  private static final int WIDTH = 500;
   private static final int HEIGHT_TOP = 215;
-  private static final int HEIGHT_BOT = 225;
+  private static final int HEIGHT_BOT = 500;
   private static final Color BG_COLOR = Color.CYAN;
 
   //search components of top pane
@@ -34,11 +34,12 @@ public class Gui extends JPanel{
   private static String[] fileParts = new String[]{"","",""};
 
 	private JPanel top;
-	private JPanel bot;
+	private JScrollPane bot;
+  private JEditorPane htmlpage;
 
 	public Gui(){
     top = new JPanel(new GridLayout(0,1));
-    bot = new JPanel();
+    bot = new JScrollPane();
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     createTopWindow();
     createBotWindow();
@@ -69,8 +70,11 @@ public class Gui extends JPanel{
 
   }
   private void createBotWindow(){
+    htmlpage = new JEditorPane("text/html",null);
+
+    bot.setViewportView(htmlpage);
     bot.setPreferredSize(new Dimension(WIDTH, HEIGHT_BOT));
-    bot.setBorder(BorderFactory.createTitledBorder("bot"));
+    bot.setViewportBorder(BorderFactory.createTitledBorder("Results"));
     bot.setBackground(BG_COLOR);
   }
 
@@ -122,9 +126,9 @@ public class Gui extends JPanel{
       } catch(DirectoryNotEmptyException e){
         System.out.println("This is a directory.\n");
       } catch(IOException e){
-        System.out.println("You do not have permission to delete this file");
+        System.out.println("You do not have permission to delete this file.\n");
       }
-      updateFile(search);
+      htmlpage.setText(updateFile(search));
     }
   }
 
@@ -186,18 +190,21 @@ public class Gui extends JPanel{
     }
   }
 
-  private static void updateFile(String repl){
+  private static String updateFile(String repl){
+    String ret = "";
     htmlname = repl.replaceAll("\\s","+") + ".html";
     try{
       BufferedWriter bw = new BufferedWriter(new FileWriter(htmlname));
-      bw.write(fileParts[0],0,fileParts[0].length());
+      bw.write(fileParts[0] + " ",0,fileParts[0].length());
       String temp = fileParts[1].replace("@keywords@",repl);
-      bw.write(temp,0,temp.length());
-      bw.write(fileParts[2],0,fileParts[2].length());
+      bw.write(temp + " ",0,temp.length());
+      bw.write(fileParts[2] + " ",0,fileParts[2].length());
       bw.close();
+      ret = fileParts[0] + " " + temp + " " + fileParts[2];
     } catch(IOException e){
       System.out.println("Error in writing to html file.\n");
       System.exit(0);
     }
+    return ret;
   }
 }
